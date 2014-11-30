@@ -46,28 +46,116 @@ app.get('/images/:id', function(req,res) {
     });
 });
 
-//Get the value of a tag for a given image
-app.get('/images/:id/:tag', function(req,res) {
+//Get the value of a machine learning tag for a given image
+app.get('/images/:id/machine-tags/:tag', function(req,res) {
     var id = req.params.id;
     var tag = req.params.tag;
-    console.log("Getting value of tag '" + tag + "' for image with id:" + id);
-    res.send("");
-})
+    console.log("Getting value of machine tag '" + tag + "' for image with id:" + id);
+    collection.findOne({"_id":new ObjectId(id)}, function(err,doc) {
+        var tags = doc.machinetags;
+        var index = tagIndex(tag,tags);
+        if(index<0) {
+            res.json({});
+        } else {
+            res.json(tags[index]);
+        }
+    });
+});
+
+//Get the value of a crowdsourced tag for a given image
+app.get('/images/:id/crowd-tags/:tag', function(req,res) {
+    var id = req.params.id;
+    var tag = req.params.tag;
+    console.log("Getting value of crowd tag '" + tag + "' for image with id:" + id);
+    collection.findOne({"_id":new ObjectId(id)}, function(err,doc) {
+        var tags = doc.crowdtags;
+        var index = tagIndex(tag,tags);
+        if(index<0) {
+            res.json({});
+        } else {
+            res.json(tags[index]);
+        }
+    });
+});
 
 //PUT
 
-//Update the value of a tag for a given image
-app.get('/images/:id/:tag', function(req,res) {
+//Update the value of a machine learning tag for a given image
+app.put('/images/:id/machine-tags/:tag/:value', function(req,res) {
+    var status = 200;
     var id = req.params.id;
     var tag = req.params.tag;
-    console.log("Updating value of tag '" + tag + "' for image with id:" + id);
+    var value = Number(req.params.value);
+    if(isNaN(value)) {
+        res.sendStatus(500);
+    } else {
+        console.log("Updating value of machine tag '" + tag + "' with value " + value + " for image with id:" + id);
+        collection.findOne({"_id":new ObjectId(id)}, function(err,doc) {
+            if(err) {
+                status = 500;
+            } else {
+                var tags = doc.machinetags;
+                removeTag(tag,tags);
+                var newTag = {};
+                newTag.tag = tag;
+                newTag.value = value;
+                tags.push(newTag);
+                collection.findAndModify({"_id":new ObjectId(id)},[["_id","asc"]],{$set:{machinetags:tags}},{},function(err,object) {
+                    if(err) {
+                        status = 500;
+                    }
+                    res.sendStatus(status);
+                });
+            }
+        });
+    }
+});
 
-})
+//Update the value of a crowdsourced tag for a given image
+app.put('/images/:id/crowd-tags/:tag/:value', function(req,res) {
+    var status = 200;
+    var id = req.params.id;
+    var tag = req.params.tag;
+    var value = Number(req.params.value);
+    if(isNaN(value)) {
+        res.sendStatus(500);
+    } else {
+        console.log("Updating value of crowd tag '" + tag + "' with value " + value + " for image with id:" + id);
+        collection.findOne({"_id":new ObjectId(id)}, function(err,doc) {
+            if(err) {
+                status = 500;
+            } else {
+                var tags = doc.crowdtags;
+                removeTag(tag,tags);
+                var newTag = {};
+                newTag.tag = tag;
+                newTag.value = value;
+                tags.push(newTag);
+                collection.findAndModify({"_id":new ObjectId(id)},[["_id","asc"]],{$set:{crowdtags:tags}},{},function(err,object) {
+                    if(err) {
+                        status = 500;
+                    }
+                    res.sendStatus(status);
+                });
+            }
+        });
+    }
+});
 
+function removeTag(tag,array) {
+    var index = tagIndex(tag,array);
+    if(index>-1) {
+        array.splice(index,1);
+    }
+}
 
-
-function randRange(value) {
-    return Math.floor(Math.random()*(value+1));
+function tagIndex(tag,array) {
+    for(var i = 0; i<array.length; i++) {
+        if(array[i].tag===tag) {
+            return i;
+        }
+    }
+    return -1;
 }
 
 app.listen(port);
