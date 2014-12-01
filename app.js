@@ -6,25 +6,19 @@ var app = express();
 app.enable("jsonp callback");
 
 var port = process.env.PORT || 1337;
-var Server = mongo.Server;
-var Db = mongo.Db;
+var MongoClient = mongo.MongoClient;
 
-var server = new Server('ds055980.mongolab.com',55980,{auto_reconnect:false});
-var db = new Db('test',server);
+var client = new MongoClient();
 
-var collection = db.collection('images');
+var db;
 
-db.open(function(err,db) {
-    if(!err) {
-        console.log('Connected to db');
+client.connect("mongodb://heroku:hGv6EFncEtoPiE1@ds055980.mongolab.com:55980/bldata",function(err,db) {
+    if(err) {
+        console.log("Connection to database failed.");
+    } else {
+        collection = db.collection("images");
+        console.log("Connection to database succeded.")
     }
-    db.authenticate('heroku',"hGv6EFncEtoPiE1",function(err,result) {
-        if(err) {
-            console.log("Auth failed");
-        } else {
-            console.log("Auth succeeded");
-        }
-    });
 });
 
 //GET
