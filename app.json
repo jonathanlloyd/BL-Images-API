@@ -1,0 +1,7 @@
+{
+  "name": "BLDATA API",
+  "description": "Image API for the British Library Open Data Project",
+  "repository": "https://github.com/turingincomplete/BL-Images-API",
+  "logo": "http://node-js-sample.herokuapp.com/node.svg",
+  "keywords": ["node", "express", "static"]
+}

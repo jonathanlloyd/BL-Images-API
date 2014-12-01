@@ -5,19 +5,26 @@ var ObjectId = require('mongodb').ObjectID;
 var app = express();
 app.enable("jsonp callback");
 
-var port = 1337;
+var port = process.env.PORT || 1337;
 var Server = mongo.Server;
 var Db = mongo.Db;
-var BSON = mongo.BSONPure;
 
-var server = new Server('localhost',27017,{auto_reconnect:true});
+var server = new Server('ds055980.mongolab.com',55980,{auto_reconnect:false});
 var db = new Db('test',server);
+
 var collection = db.collection('images');
 
 db.open(function(err,db) {
     if(!err) {
         console.log('Connected to db');
     }
+    db.authenticate('heroku',"hGv6EFncEtoPiE1",function(err,result) {
+        if(err) {
+            console.log("Auth failed");
+        } else {
+            console.log("Auth succeeded");
+        }
+    });
 });
 
 //GET
