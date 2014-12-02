@@ -21,6 +21,15 @@ client.connect("mongodb://heroku:hGv6EFncEtoPiE1@ds055980.mongolab.com:55980/bld
     }
 });
 
+//Cross origin
+
+app.all('*', function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
+
 //GET
 
 //Get a random image from the data set
