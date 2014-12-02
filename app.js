@@ -34,7 +34,7 @@ app.get('/images/random', function(req,res) {
             "skip":skipNum
         }
         collection.findOne({},{},options,function(err,doc) {
-            res.json(doc);
+            res.jsonp(doc);
         });
     });
 });
@@ -43,7 +43,7 @@ app.get('/images/random', function(req,res) {
 app.get('/images/:id', function(req,res) {
     console.log("Getting image with ID:"+req.params.id);
     collection.findOne({"_id":new ObjectId(req.params.id)},function(err,doc) {
-        res.json(doc);
+        res.jsonp(doc);
     });
 });
 
@@ -56,9 +56,9 @@ app.get('/images/:id/machine-tags/:tag', function(req,res) {
         var tags = doc.machinetags;
         var index = tagIndex(tag,tags);
         if(index<0) {
-            res.json({});
+            res.jsonp({});
         } else {
-            res.json(tags[index]);
+            res.jsonp(tags[index]);
         }
     });
 });
@@ -72,9 +72,9 @@ app.get('/images/:id/crowd-tags/:tag', function(req,res) {
         var tags = doc.crowdtags;
         var index = tagIndex(tag,tags);
         if(index<0) {
-            res.json({});
+            res.jsonp({});
         } else {
-            res.json(tags[index]);
+            res.jsonp(tags[index]);
         }
     });
 });
