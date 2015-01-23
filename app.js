@@ -13,6 +13,7 @@ var client = new MongoClient();
 var db;
 
 client.connect("mongodb://username:password.domain:port/database",function(err,db) {
+
     if(err) {
         console.log("Connection to database failed.");
     } else {
