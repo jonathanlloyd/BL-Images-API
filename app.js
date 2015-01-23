@@ -12,7 +12,7 @@ var client = new MongoClient();
 
 var db;
 
-client.connect("mongodb://heroku:hGv6EFncEtoPiE1@ds055980.mongolab.com:55980/bldata",function(err,db) {
+client.connect("mongodb://username:password.domain:port/database",function(err,db) {
     if(err) {
         console.log("Connection to database failed.");
     } else {
@@ -21,7 +21,7 @@ client.connect("mongodb://heroku:hGv6EFncEtoPiE1@ds055980.mongolab.com:55980/bld
     }
 });
 
-//Cross origin
+//Cross origin (severside)
 
 app.all('*', function(req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
