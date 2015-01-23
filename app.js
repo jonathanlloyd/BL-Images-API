@@ -12,7 +12,7 @@ var client = new MongoClient();
 
 var db;
 
-client.connect("mongodb://heroku:hGv6EFncEtoPiE1@ds055980.mongolab.com:55980/bldata",function(err,db) {
+client.connect("mongodb://heroku:vh9MzTsh5mW95po.mongolab.com:55980/bldata",function(err,db) {
     if(err) {
         console.log("Connection to database failed.");
     } else {
